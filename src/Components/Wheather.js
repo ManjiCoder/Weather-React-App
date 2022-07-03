@@ -6,7 +6,7 @@ import Search from "../Img/search.png";
 import Location from "../Img/location.png";
 
 function Wheather() {
-  const [search, setSearch] = useState("mumbai"); // TO GET SEARCH QUERY
+  const [search, setSearch] = useState("mumbai");
   const [query, setQuery] = useState("");
   const [unit, setUnit] = useState("metric");
   const [city, setCity] = useState(null);
@@ -22,54 +22,6 @@ function Wheather() {
   const [temp, setTemp] = useState(9);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  // const [wheatherData, setWheatherData] =
-  //   useState();
-  // {
-  //     "coord": { "lon": 72.8479, "lat": 19.0144 },
-  //     "weather": [
-  //       {
-  //         "id": 802,
-  //         "main": "Clouds",
-  //         "description": "scattered clouds",
-  //         "icon": "03d"
-  //       }
-  //     ],
-  //     "base": "stations",
-  //     "main": {
-  //       "temp": 30.99,
-  //       "feels_like": 37.99,
-  //       "temp_min": 26.94,
-  //       "temp_max": 30.99,
-  //       "pressure": 1005,
-  //       "humidity": 74
-  //     },
-  //     "visibility": 2500,
-  //     "wind": { "speed": 6.69, "deg": 230, "gust": 11.83 },
-  //     "clouds": { "all": 40 },
-  //     "dt": 1655291476,
-  //     "sys": {
-  //       "type": 1,
-  //       "id": 9052,
-  //       "country": "IN",
-  //       "sunrise": 1655253064,
-  //       "sunset": 1655300825
-  //     },
-  //     "timezone": 19800,
-  //     "id": 1275339,
-  //     "name": "Mumbai",
-  //     "cod": 200
-  //   }
-  /*
-  console.log(wheatherData.weather[0].main)
-  console.log(wheatherData.weather[0].id)
-  console.log(wheatherData.weather[0].description)
-  console.log(wheatherData.main.temp)
-  console.log(wheatherData.main.feels_like)
-  console.log(wheatherData.main.temp_min)
-  console.log(wheatherData.main.temp_max)
-  console.log(wheatherData.main.pressure)
-  console.log(wheatherData.main.humidity)
-*/
 
   const fetchApi = async () => {
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=c412e32f8374f6a87ce341d095a159f6&units=${unit}`;
@@ -88,9 +40,7 @@ function Wheather() {
     setPressure(res.main.pressure);
     setSunriseTime(String(new Date(res.sys.sunrise).toLocaleString()));
     setSunsetTime(String(new Date(res.sys.sunset).toLocaleString()));
-    // console.log(String(new Date(res.sys.sunrise).toLocaleString()));
     console.log(url);
-    console.log(res.cod);
   };
   const handleSearch = () => {
     setSearch(query);
@@ -121,10 +71,11 @@ function Wheather() {
       console.warn(`ERROR(${err.code}): ${err.message}`);
     }
     console.log("works");
+    console.log(latitude, longitude);
     navigator.geolocation.getCurrentPosition(success, error, options);
   }
   return (
-    <div className="pb-20 flex justify-center  bg-cyan-500 text-white">
+    <div className="pb-20 flex flex-wrap justify-center  bg-cyan-500 text-white">
       <main className="px-3 py-4 mt-20 border-2  bg-cyan-600 rounded-md">
         <h1 className="my-4 text-2xl text-center">Wheather</h1>
         <h1 className="my-4 text-xl text-center">
@@ -132,7 +83,7 @@ function Wheather() {
         </h1>
         <h2 className="my-4 text text-center">{date}</h2>
         <form
-          className="px-4 py-2 border-2 flex bg-cyan-700 space-x-3 rounded-lg items-center"
+          className="px-4 py-2 border-2 flex flex-wrap bg-cyan-700 space-x-3 rounded-lg items-center"
           onSubmit={(e) => e.preventDefault()}
         >
           <input
@@ -165,7 +116,7 @@ function Wheather() {
         {/* {status===200?console.log('city'):console.log('no city')} */}
         {status === 200 ? (
           <>
-            <div className="py-7 capitalize flex px-2 items-center justify-around">
+            <div className="py-7 capitalize flex flex-wrap px-2 items-center justify-around">
               <div className="text-center">
                 <img className="h-16" src={Img} alt="" />
                 <span>{description}</span>
@@ -173,19 +124,19 @@ function Wheather() {
               <div className="text-5xl">
                 {temp.toFixed()}°{unit === "metric" ? "C" : "F"}
               </div>
-              <div className="flex flex-col text-left">
+              <div className="flex flex-wrap flex-col text-left">
                 <span>wind: {wind} Kmph </span>
                 <span>Pressure: {pressure} mb</span>
                 <span>Humitidy: {humidity} </span>
               </div>
             </div>
-            <div className="flex justify-between p-3">
-              <div className="flex flex-col items-center">
+            <div className="flex flex-wrap justify-between p-3">
+              <div className="flex flex-wrap flex-col items-center">
                 <img className="w-16" src={Sunrise} alt="" />
                 <span>Sunrise</span>
                 <span>{sunriseTime}</span>
               </div>
-              <div className="flex flex-col items-center">
+              <div className="flex flex-wrap flex-col items-center">
                 <img className="w-16" src={Sunset} alt="" />
                 <span>Sunset</span>
                 <span>{sunsetTime}</span>
