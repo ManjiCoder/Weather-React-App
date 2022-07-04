@@ -6,7 +6,7 @@ import Search from "../Img/search.png";
 import Location from "../Img/location.png";
 
 function Wheather() {
-  const [search, setSearch] = useState("mumbai");
+  const [search, setSearch] = useState("q=mumbai");
   const [query, setQuery] = useState("");
   const [unit, setUnit] = useState("metric");
   const [city, setCity] = useState(null);
@@ -21,11 +21,11 @@ function Wheather() {
   const [status, setStatus] = useState(null);
   const [temp, setTemp] = useState(0);
   const [realTemp, setRealTemp] = useState(0);
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
 
   const fetchApi = async () => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=c412e32f8374f6a87ce341d095a159f6&units=${unit}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?${search}&appid=c412e32f8374f6a87ce341d095a159f6&units=${unit}`;
     let data = await fetch(url);
     let res = await data.json();
     setStatus(res.cod);
@@ -46,14 +46,13 @@ function Wheather() {
   };
   const handleSearch = () => {
     let removeSpace = query.replace(/\s+/g, " ").trim();
-    setSearch(removeSpace);
-    // console.log(query);
-    // console.log(removeSpace);
+    setSearch(`q=${removeSpace}`);
+    setQuery(removeSpace);
   };
   useEffect(() => {
     fetchApi();
     // eslint-disable-next-line
-  }, [search, unit, city]);
+  }, [search, unit]);
   function GetLocation() {
     const options = {
       enableHighAccuracy: true,
@@ -63,12 +62,17 @@ function Wheather() {
 
     function success(pos) {
       const crd = pos.coords;
+      console.time("mycode");
       setLatitude(Math.round((crd.latitude + Number.EPSILON) * 100) / 100);
       setLongitude(Math.round((crd.longitude + Number.EPSILON) * 100) / 100);
+      setSearch(`lat=${latitude}&lon=${longitude}`);
+      console.log(search);
       console.log("Your current position is:");
-      console.log(`Latitude : ${crd.latitude}`);
-      console.log(`Longitude: ${crd.longitude}`);
+      console.log(`Latitude : ${crd.latitude.toFixed(2)}`);
+      console.log(`Longitude: ${crd.longitude.toFixed(2)}`);
       console.log(`More or less ${crd.accuracy} meters.`);
+      console.timeEnd("mycode");
+      return search;
     }
 
     function error(err) {
@@ -77,6 +81,7 @@ function Wheather() {
     console.log("works");
     console.log(latitude, longitude);
     navigator.geolocation.getCurrentPosition(success, error, options);
+    return success();
   }
   return (
     <div className="py-11 min-h-screen flex flex-wrap justify-center  bg-cyan-500 text-white">
@@ -98,7 +103,7 @@ function Wheather() {
         >
           <div className="flex">
             <input
-              className="border-solid pl-4 py-1 border-2 border-cyan-400 rounded-lg text-black focus:outline-none focus:ring focus:ring-cyan-500 focus-within:border-transparent"
+              className="capitalize bg-gray-300 text-black border-solid pl-4 py-1 border-2 border-white rounded-lg focus:outline-none focus:ring focus:ring-cyan-400 hover:bg-white focus-within:bg-white"
               type="text"
               id="text"
               name="text"
@@ -145,10 +150,9 @@ function Wheather() {
             Latitude: {latitude} Longitude: {longitude}
           </div> */}
         </form>
-        {/* {status===200?console.log('city'):console.log('no city')} */}
         {status === 200 ? (
           <>
-            <div className="py-7 capitalize flex flex-wrap px-2 items-center justify-between gap-5">
+            <div className="py-7 capitalize flex flex-wrap px-4 items-center justify-between gap-5">
               <div className="text-center">
                 <img className="h-16" src={Img} alt="" />
                 <span>{description}</span>
@@ -163,7 +167,7 @@ function Wheather() {
                 <div className="text-slate-300">
                   Feels Likes:{" "}
                   <span className="text-white text-xl">
-                    {realTemp.toFixed()}°C
+                    {realTemp.toFixed()}°{unit === "metric" ? "C" : "F"}
                   </span>
                 </div>
               </div>
@@ -173,7 +177,7 @@ function Wheather() {
               >
                 <span>wind: {wind} Kmph </span>
                 <span>Pressure: {pressure} mb</span>
-                <span>Humitidy: {humidity} </span>
+                <span>Humitidy: {humidity} % </span>
               </div>
             </div>
 
