@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Img from "../Img/Cloudy.png";
-import Sunrise from "../Img/sunrise.png";
-import Sunset from "../Img/sunset.png";
-import Search from "../Img/search.png";
-import Location from "../Img/location.png";
+import Img from "../img/Cloudy.png";
+import Sunrise from "../img/sunrise.png";
+import Sunset from "../img/sunset.png";
+import Search from "../img/search.png";
+import Location from "../img/location.png";
+import PropTypes from "prop-types";
 
-function Wheather() {
+function Wheather(props) {
   const [search, setSearch] = useState("q=mumbai");
   const [query, setQuery] = useState("");
   const [unit, setUnit] = useState("metric");
@@ -21,16 +22,15 @@ function Wheather() {
   const [status, setStatus] = useState(null);
   const [temp, setTemp] = useState(0);
   const [realTemp, setRealTemp] = useState(0);
+  const [visibility, setVisibility] = useState(0);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
 
   const fetchApi = async () => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?${search}&appid=c412e32f8374f6a87ce341d095a159f6&units=${unit}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?${search}&appid=${props.apiKey}&units=${unit}`;
     let data = await fetch(url);
     let res = await data.json();
     setStatus(res.cod);
-    console.log(url);
-    console.log(res);
     setCity(res.name);
     setTemp(res.main.temp);
     setCountry(res.sys.country);
@@ -42,7 +42,12 @@ function Wheather() {
     setSunriseTime(String(new Date(res.sys.sunrise).toLocaleString()));
     setSunsetTime(String(new Date(res.sys.sunset).toLocaleString()));
     setRealTemp(res.main["feels_like"]);
+    setVisibility(res.visibility);
     console.log(url);
+    // console.log(res.visibility);
+    // console.log(res.clouds);
+    // console.log(Object.keys(res.rain)[0]);
+    // console.log(Object.values(res.rain)[0]);
   };
   const handleSearch = () => {
     let removeSpace = query.replace(/\s+/g, " ").trim();
@@ -85,7 +90,7 @@ function Wheather() {
   }
   return (
     <div className="py-11 min-h-screen flex flex-wrap justify-center  bg-cyan-500 text-white">
-      <main className="w-[85%] px-3 py-4 border-2  bg-cyan-600 rounded-md">
+      <main className="w-[85%] md:w-auto px-3 py-4 border-2  bg-cyan-600 rounded-md">
         <h1 className="my-4 text-2xl text-center">Wheather</h1>
         {status === 200 ? (
           <>
@@ -138,7 +143,10 @@ function Wheather() {
             <button className="hover:cursor-pointer" onClick={GetLocation}>
               <img className="h-7 invert" src={Location} alt="" />
             </button>
-            <button className="text-3xl" onClick={() => setUnit("metric")}>
+            <button
+              className="text-3xl text-slate-400"
+              onClick={() => setUnit("metric")}
+            >
               °C
             </button>
             <span className="text-3xl mb-2">|</span>
@@ -176,6 +184,7 @@ function Wheather() {
                 style={{ margin: 0 }}
               >
                 <span>wind: {wind} Kmph </span>
+                <span>Visibility: {visibility} </span>
                 <span>Pressure: {pressure} mb</span>
                 <span>Humitidy: {humidity} % </span>
               </div>
@@ -201,5 +210,9 @@ function Wheather() {
     </div>
   );
 }
+
+Wheather.prototype = {
+  apiKey: PropTypes.string,
+};
 
 export default Wheather;

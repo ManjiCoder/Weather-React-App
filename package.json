@@ -1,6 +1,6 @@
 {
-  "homepageGithub": "https://ManjiCoder.github.io/Weather-React-App",
-  "homepage":".",
+  "homepage": "https://ManjiCoder.github.io/Weather-React-App",
+  "homepageLocal":".",
   "name": "weather",
   "version": "0.1.0",
   "private": true,
