@@ -144,7 +144,7 @@ function Wheather(props) {
               <img className="h-7 invert" src={Location} alt="" />
             </button>
             <button
-              className="text-3xl text-slate-400"
+              className="text-3xl"
               onClick={() => setUnit("metric")}
             >
               °C
